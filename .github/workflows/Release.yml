@@ -33,7 +33,7 @@ jobs:
         run: go mod download
 
       - name: Build
-        run: go build -ldflags="-X 'github.com/techgarage-ir/IP-Hub/config.Version=${{ github.ref_name }}' -X 'github.com/techgarage-ir/IP-Hub/config.BaseSource=${{ secrets.lookup_source }}' -s -w" -trimpath -o /dist/app
+        run: go build -ldflags="-X 'github.com/techgarage-ir/IP-Hub/config.Version=${{ github.ref_name }}' -X 'github.com/techgarage-ir/IP-Hub/config.BaseSource=${{ secrets.LOOKUP_SOURCE }}' -s -w" -trimpath -o /dist/app
 
       - name: Build plugins
         run: |

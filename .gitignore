@@ -1,0 +1,20 @@
+# Ignore everything
+*
+
+# But not these files...
+!/.gitignore
+
+!*.go
+!go.sum
+!go.mod
+
+!README.md
+!LICENSE
+
+# if they are in subdirectories
+!*/
+
+!/public/**
+!/views/**
+
+!Dockerfile

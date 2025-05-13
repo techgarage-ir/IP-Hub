@@ -1,8 +1,14 @@
 name: CI
+
 on:
   push:
     tags:
       - '**'
+  workflow_dispatch:
+    inputs:
+      tag:
+        required: true
+        description: 'Output image tag'
 
 jobs:
   build:
@@ -43,12 +49,18 @@ jobs:
           done
 
       - name: Define Tags
-        run: echo "tags=ghcr.io/${{ github.repository_owner }}/IP-HUB:${{ github.ref_name }}, ghcr.io/${{ github.repository_owner }}/IP-HUB:latest" >> $GITHUB_ENV
+        id: define-tags
+        run: |
+          if [ "${{ github.event_name }}" == "push" ]; then
+            echo "ghcr.io/${{ github.repository_owner }}/IP-Hub:${{ github.ref_name }}, ghcr.io/${{ github.repository_owner }}/IP-Hub:latest" >> $GITHUB_ENV
+          else
+            echo "ghcr.io/${{ github.repository_owner }}/IP-Hub:${{ github.event.inputs.tag }}" >> $GITHUB_ENV
+          fi
 
       - name: Build and push Docker images
         uses: docker/build-push-action@v6
         env:
-          GHCR_IMAGE_NAME: "ghcr.io/${{ github.repository_owner }}/IP-HUB"
+          GHCR_IMAGE_NAME: "ghcr.io/${{ github.repository_owner }}/IP-Hub"
         with:
           platforms: linux/amd64
           context: .

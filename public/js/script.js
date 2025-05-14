@@ -65,6 +65,7 @@ $(() => {
     backButton.onclick = () => {
         inputForm.reset();
         turnstile.reset('#captcha-widget');
+        $('#country').val(null).trigger('change');
         inputForm.style.display = 'block';
         appResult.style.display = 'none';
         responseText.classList.add('d-none');

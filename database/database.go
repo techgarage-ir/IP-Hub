@@ -48,8 +48,14 @@ func (c *LookupCache) Set(lookup pluginBase.Lookup) error {
 		return err
 	}
 
-	// Set 4-hour expiration
-	err = c.client.Expire(c.ctx, key, 4*time.Hour).Err()
+	// Calculate the duration until the next 6-hour mark in UTC.
+	// Add 1-minute to make sure source is updated
+	now := time.Now().UTC()
+	next := time.Date(now.Year(), now.Month(), now.Day(), now.Hour()-(now.Hour()%6)+6, 1, 0, 0, time.UTC)
+	duration := next.Sub(now)
+
+	// Set expiration
+	err = c.client.Expire(c.ctx, key, duration).Err()
 	return err
 }
 

@@ -39,13 +39,13 @@ jobs:
         run: go mod download
 
       - name: Build
-        run: go build -ldflags="-X 'github.com/techgarage-ir/IP-Hub/config.Version=$VERSION' -X 'github.com/techgarage-ir/IP-Hub/config.BaseSource=${{ secrets.LOOKUP_SOURCE }}' -s -w" -trimpath -o /dist/app
+        run: go build -ldflags="-X 'github.com/techgarage-ir/IP-Hub/config.Version=$VERSION' -X 'github.com/techgarage-ir/IP-Hub/config.BaseSource=${{ secrets.LOOKUP_SOURCE }}' -s -w" -trimpath -o dist/app
 
       - name: Build plugins
         run: |
           for f in plugins/*/*.go; do \
             echo "Building $f"; \
-            go build -buildmode=plugin -ldflags='-s -w' -trimpath -o "/dist/${f%.go}.so" "$f"; \
+            go build -buildmode=plugin -ldflags='-s -w' -trimpath -o "dist/${f%.go}.so" "$f"; \
           done
 
       - name: Define Tags

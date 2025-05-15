@@ -8,6 +8,7 @@ import (
 
 	minifier "github.com/beyer-stefan/gofiber-minifier"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/template/html/v2"
 	"github.com/techgarage-ir/IP-Hub/config"
@@ -65,6 +66,9 @@ func init() {
 		MinifyJSON:       true,
 		SuppressWarnings: true,
 	}))
+
+	// Configure cache
+	app.Use(cache.New())
 
 	// Routes
 	app.Get("/", handleHome)

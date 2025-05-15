@@ -25,11 +25,10 @@ $(() => {
         loadingSpinner.classList.add('d-flex');
 
         let data = new FormData(event.target);
-        let jsonData = formDataToJSON(data);
         let succeed = false;
         fetch(event.target.action, {
             method: inputForm.method,
-            body: jsonData,
+            body: formDataToJSON(data),
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -62,7 +61,12 @@ $(() => {
             downloadButton.classList.remove("d-none");
         });
         // GA4
-        gtag('event', 'submit_form', validateDataToGA4(jsonData));
+        gtag('event', 'submit_form', {
+            'country': countryInput.options[countryInput.selectedIndex].text,
+            'format': document.querySelector('input[name="format"]:checked').value,
+            'ip_type': document.querySelector('input[name="version"]:checked').value,
+            'access_type': document.querySelector('input[name="access"]:checked').value,
+        });
     };
 
     backButton.onclick = () => {
@@ -132,12 +136,6 @@ function formDataToJSON(formData) {
         data[name] = value;
     }
 
-    return JSON.stringify(data);
-}
-
-function validateDataToGA4(formData) {
-    let data = JSON.parse(formData);
-    delete data['cf-turnstile-response'];
     return JSON.stringify(data);
 }
 

@@ -57,5 +57,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          build-args: Version=${{ env.VERSION }},LookupEndpoint=${{ secrets.LOOKUP_SOURCE }}
+          build-args: |
+            Version=${{ env.VERSION }}
+            LookupEndpoint=${{ secrets.LOOKUP_SOURCE }}
           tags: ${{ env.tags }}

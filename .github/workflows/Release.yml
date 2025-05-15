@@ -17,11 +17,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.24'
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
@@ -35,27 +30,14 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GHCR_PAT }}
 
-      - name: Install dependencies
-        run: go mod download
-
-      - name: Set VERSION variable
-        id: set-version
+      - name: Define Version
+        id: define-version
         run: |
           if [ "${{ github.event_name }}" = "push" ]; then
             echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
           else
             echo "VERSION=${{ github.event.inputs.tag }}" >> $GITHUB_ENV
           fi
-
-      - name: Build
-        run: go build -ldflags="-X 'github.com/techgarage-ir/IP-Hub/config.Version=${VERSION}' -X 'github.com/techgarage-ir/IP-Hub/config.BaseSource=${{ secrets.LOOKUP_SOURCE }}' -s -w" -trimpath -o dist/app
-
-      - name: Build plugins
-        run: |
-          for f in plugins/*/*.go; do \
-            echo "Building $f"; \
-            go build -buildmode=plugin -ldflags='-s -w' -trimpath -o "dist/${f%.go}.so" "$f"; \
-          done
 
       - name: Define Tags
         id: define-tags
@@ -75,4 +57,5 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
+          build-args: Version=${{ env.VERSION }},LookupEndpoint=${{ secrets.LOOKUP_SOURCE }}
           tags: ${{ env.tags }}
